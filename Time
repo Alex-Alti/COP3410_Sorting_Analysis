@@ -1,0 +1,104 @@
+import time
+import random
+import matplotlib.pyplot as plt
+
+# Sorting Algorithms
+def selection_sort(A):
+    for i in range(1,len(A)):     #outer loop goes through the list
+        for j in range(i,0,-1):   #inner loop moves to the left of the current value
+            if A[j] < A[j-1]:     #Swap two values if out of order
+                temp = A[j]
+                A[j] = A[j-1]
+                A[j-1] = temp
+    return A; 
+
+def insertion_sort(A):
+    for k in range(1, len(A)):
+        cur = A[k]
+        j = k
+        while j>0 and A[j-1] > cur:           
+            A[j] = A[j-1]
+            j-=1
+        A[j] = cur
+    return A
+
+def bubble_sort(elements):
+  # Outer loop to iterate through the list n times
+  for n in range(len(elements) - 1, 0, -1):
+    swapped = False
+    # Inner loop to compare adjacent elements
+    for i in range(n):
+      if elements[i] > elements[i + 1]:
+        # Swap elements if they are in the wrong order
+        swapped = True
+        elements[i], elements[i + 1] = elements[i + 1], elements[i]
+    # If we didn't make any swaps in a pass, the list is already sorted and we can exit the outer loop
+    if not swapped:
+      return
+
+# Function to generate random arrays and measure runtime
+def measure_runtime(sort_func, array_sizes, seed):
+    random.seed(seed)  # Set the seed for reproducibility
+    runtimes = []
+    for size in array_sizes:
+        arr = random.sample(range(size * 10), size)
+        start_time = time.time()
+        sort_func(arr)
+        end_time = time.time()
+        runtimes.append(end_time - start_time)
+    return runtimes
+
+# Function to generate sorted arrays and measure runtime
+def measure_runtime_sorted(sort_func, array_sizes):
+    runtimes = []
+    for size in array_sizes:
+        arr = list(range(size))
+        start_time = time.time()
+        sort_func(arr)
+        end_time = time.time()
+        runtimes.append(end_time - start_time)
+    return runtimes
+
+# Main analysis function
+def analyze_algorithms():
+    array_sizes = [50, 500, 1000, 1500, 2000, 2500, 3000, 3500, 4000, 4500, 5000, 5500, 6000, 6500, 7000, 7500, 8000, 8500, 9000, 9500, 10000]
+
+    # Measure runtime for random arrays
+    selection_sort_runtimes = measure_runtime(selection_sort, array_sizes, seed)
+    insertion_sort_runtimes = measure_runtime(insertion_sort, array_sizes, seed)
+    bubble_sort_runtimes = measure_runtime(bubble_sort, array_sizes, seed)
+
+    # Plot runtime vs array size for random arrays
+    plt.figure(figsize=(10, 6))
+    plt.plot(array_sizes, selection_sort_runtimes, marker='o', label='Selection Sort')
+    plt.plot(array_sizes, insertion_sort_runtimes, marker='o', label='Insertion Sort')
+    plt.plot(array_sizes, bubble_sort_runtimes, marker='o', label='Bubble Sort')
+    plt.xlabel('Array Size')
+    plt.ylabel('Runtime (seconds)')
+    plt.title('Sorting Algorithms Runtime on Random Arrays')
+    plt.legend()
+    plt.grid(True)
+    plt.savefig('sorting_algorithms_comparison_random.png')
+    plt.show()
+
+    # Measure runtime for sorted arrays
+    selection_sort_runtimes_sorted = measure_runtime_sorted(selection_sort, array_sizes)
+    insertion_sort_runtimes_sorted = measure_runtime_sorted(insertion_sort, array_sizes)
+    bubble_sort_runtimes_sorted = measure_runtime_sorted(bubble_sort, array_sizes)
+
+    # Plot runtime vs array size for sorted arrays
+    plt.figure(figsize=(10, 6))
+    plt.plot(array_sizes, selection_sort_runtimes_sorted, marker='o', label='Selection Sort')
+    plt.plot(array_sizes, insertion_sort_runtimes_sorted, marker='o', label='Insertion Sort')
+    plt.plot(array_sizes, bubble_sort_runtimes_sorted, marker='o', label='Bubble Sort')
+    plt.xlabel('Array Size')
+    plt.ylabel('Runtime (seconds)')
+    plt.title('Sorting Algorithms Runtime on Sorted Arrays')
+    plt.legend()
+    plt.grid(True)
+    plt.savefig('sorting_algorithms_comparison_sorted.png')
+    plt.show()
+
+seed = 42
+# Run the analysis
+analyze_algorithms()
